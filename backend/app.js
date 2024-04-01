@@ -12,6 +12,9 @@ const userRoutes = require('./routes/user'); // Import user routes
 
 const app = express();
 
+// Middleware to parse JSON-encoded bodies
+app.use(express.json());
+
 // Connect to MongoDB Atlas
 mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.vnvkk29.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`)
     .then(() => {
