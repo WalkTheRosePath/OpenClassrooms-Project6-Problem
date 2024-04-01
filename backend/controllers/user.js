@@ -1,19 +1,23 @@
+/**
+ * Controller functions for user authentication (signup and login)
+ * These functions handle user signup and login requests, interact with the database, and generate JWT tokens for authentication
+ */
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-// Define a controller function for handling user signup
-// This function will receive the request object, extract user data from the request body, perform necessary validation, and then save the user to the database
+// Controller function for user signup
 exports.signup = (req, res, next) => {
-    //Extract user data from request body
-    bcrypt.hash(req.body.password, 10).then( 
+    // Hash the password using bcrypt
+    bcrypt.hash(req.body.password, 10).then(
         (hash) => {
-            // Create new user instance
+            // Create a new user instance with hashed password
             const user = new User({
                 email: req.body.email,
                 password: hash
             });
-            // Save user to database
+            // Save the user to the database
             user.save().then(
                 () => {
                     res.status(201).json({
@@ -21,6 +25,7 @@ exports.signup = (req, res, next) => {
                     });
                 }
             ).catch(
+                // Handle database error
                 (error) => {
                     res.status(500).json({
                         error: error
@@ -31,8 +36,7 @@ exports.signup = (req, res, next) => {
     );
 };
 
-// Define a controller function for handling user login
-// This function will receive the request object, attempt to find the user by email in the database, compare the password, and generate a JWT token if authentication succeeds
+// Controller function for user login
 exports.login = (req, res, next) => {
     // Find user by email in the database
     User.findOne({ email: req.body.email }).then(
@@ -52,7 +56,7 @@ exports.login = (req, res, next) => {
                             error: new Error('Incorrect password!')
                         });
                     }
-                    // Generate JWT token
+                    // Generate JWT token for authentication
                     const token = jwt.sign(
                         { userId: user._id },
                         'RANDOM_TOKEN_SECRET',
