@@ -2,13 +2,18 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
+// Define a controller function for handling user signup
+// This function will receive the request object, extract user data from the request body, perform necessary validation, and then save the user to the database
 exports.signup = (req, res, next) => {
-    bcrypt.hash(req.body.password, 10).then(
+    //Extract user data from request body
+    bcrypt.hash(req.body.password, 10).then( 
         (hash) => {
+            // Create new user instance
             const user = new User({
                 email: req.body.email,
                 password: hash
             });
+            // Save user to database
             user.save().then(
                 () => {
                     res.status(201).json({
@@ -26,6 +31,8 @@ exports.signup = (req, res, next) => {
     );
 };
 
+// Define a controller function for handling user login
+// This function will receive the request object, attempt to find the user by email in the database, compare the password, and generate a JWT token if authentication succeeds
 exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email }).then(
         (user) => {
