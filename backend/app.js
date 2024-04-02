@@ -7,6 +7,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 
+// Import sauce and user routes
 const sauceRoutes = require('./routes/sauce'); // Import sauce routes
 const userRoutes = require('./routes/user'); // Import user routes
 
