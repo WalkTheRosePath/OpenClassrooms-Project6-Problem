@@ -44,7 +44,7 @@ exports.login = (req, res, next) => {
             // If user is not found, return an error response
             if (!user) {
                 return res.status(401).json({
-                    error: new Error('User not found!')
+                    error: new Error('Incorrect username or password!').message
                 });
             }
             // Compare passwords using bcrypt
@@ -53,7 +53,7 @@ exports.login = (req, res, next) => {
                     // If password is incorrect, return an error response
                     if (!valid) {
                         return res.status(401).json({
-                            error: new Error('Incorrect password!')
+                            error: new Error('Incorrect username or password!').message
                         });
                     }
                     // Generate JWT token for authentication
@@ -70,8 +70,9 @@ exports.login = (req, res, next) => {
             ).catch(
                 // Handle bcrypt error
                 (error) => {
+                    console.log(error);
                     res.status(500).json({
-                        error: error
+                        error: error.message
                     });
                 }
             );
@@ -79,8 +80,9 @@ exports.login = (req, res, next) => {
     ).catch(
         // Handle database error
         (error) => {
+            console.log(error);
             res.status(500).json({
-                error: error
+                error: error.message
             });
         }
     );

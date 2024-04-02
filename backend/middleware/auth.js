@@ -24,7 +24,7 @@ module.exports = (req, res, next) => {
     } catch {
         // Handle authentication failure with an error response
         res.status(401).json({
-            error: new Error('Invalid request!')
+            error: new Error('Invalid request!').message
         });
     }
 };

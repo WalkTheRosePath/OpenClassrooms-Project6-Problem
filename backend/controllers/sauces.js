@@ -10,6 +10,7 @@ exports.createSauce = (req, res, next) => {
     const url = req.protocol + '://' + req.get('host');
     // Create a new Sauce instance with data from the request
     const sauce = new Sauce({
+        // TODO uPDATE
         title: req.body.sauce.title,
         description: req.body.sauce.description,
         imageUrl: url + '/images/' + req.file.filename,
