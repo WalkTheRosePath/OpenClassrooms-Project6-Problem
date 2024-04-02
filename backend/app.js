@@ -1,13 +1,13 @@
 /**
  * Main application file for setting up the Express server and defining routes
- * Handles connections to MongoDB Atlas and mounts API routes for stuff and user endpoints
+ * Handles connections to MongoDB Atlas and mounts API routes for sauce and user endpoints
  */
 
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 
-const stuffRoutes = require('./routes/stuff'); // Import stuff routes
+const sauceRoutes = require('./routes/sauce'); // Import sauce routes
 const userRoutes = require('./routes/user'); // Import user routes
 
 const app = express();
@@ -36,8 +36,8 @@ app.use((req, res, next) => {
 // Serve static images
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// Mount stuff and user routes
-app.use('/api/stuff', stuffRoutes);
+// Mount sauce and user routes
+app.use('/api/sauce', sauceRoutes);
 app.use('/api/auth', userRoutes);
 
 module.exports = app;

@@ -121,7 +121,7 @@ exports.deleteSauce = (req, res, next) => {
 };
 
 // Controller function to get all Sauces
-exports.getAllStuff = (req, res, next) => {
+exports.getAllSauces = (req, res, next) => {
     // Find all Sauces in the database
     Sauce.find().then(
         (sauces) => {
