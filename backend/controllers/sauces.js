@@ -55,7 +55,7 @@ exports.createSauce = (req, res, next) => {
     // Save the Sauce to the database
     sauce.save()
         .then(() => {
-            // If successfully saved, return a message
+            // If saved successfully, return a message
             res.status(201).json({
                 message: 'Sauce saved successfully!'
             });
