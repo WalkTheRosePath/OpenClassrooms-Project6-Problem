@@ -124,3 +124,75 @@ exports.deleteSauce = (req, res, next) => {
         });
 };
 
+// Controller function to like or dislike a Sauce
+exports.likeOrDislikeSauce = (req, res, next) => {
+    const { userId, like } = req.body;
+    const sauceId = req.params.id;
+
+    Sauce.findOne({ _id: sauceId })
+        .then((sauce) => {
+            // Check if the user has already liked or disliked the sauce
+            const alreadyLiked = sauce.usersLiked.includes(userId);
+            const alreadyDisliked = sauce.usersDisliked.includes(userId);
+
+            // Update likes and dislikes accordingly
+            if (like === 1 && !alreadyLiked && !alreadyDisliked) {
+                // Like the sauce
+                sauce.likes++;
+                sauce.usersLiked.push(userId);
+
+                // Remove user from usersDisliked array if already present
+                const index = sauce.usersDisliked.indexOf(userId);
+                if (index !== -1) {
+                    sauce.usersDisliked.splice(index, 1);
+                    sauce.dislikes--;
+                }
+            } else if (like === -1 && !alreadyLiked && !alreadyDisliked) {
+                // Dislike the sauce
+                sauce.dislikes++;
+                sauce.usersDisliked.push(userId);
+
+                // Remove user from usersLiked array if already present
+                const index = sauce.usersLiked.indexOf(userId);
+                if (index !== -1) {
+                    sauce.usersLiked.splice(index, 1);
+                    sauce.likes--;
+                }
+            } else if (like === 0 && alreadyLiked) {
+                // Cancel like
+                sauce.likes--;
+                const index = sauce.usersLiked.indexOf(userId);
+                if (index !== -1) {
+                    sauce.usersLiked.splice(index, 1);
+                }
+            } else if (like === 0 && alreadyDisliked) {
+                // Cancel dislike
+                sauce.dislikes--;
+                const index = sauce.usersDisliked.indexOf(userId);
+                if (index !== -1) {
+                    sauce.usersDisliked.splice(index, 1);
+                }
+            }
+
+            // Update the sauce in the database
+            Sauce.updateOne({ _id: sauceId }, sauce)
+                .then(() => {
+                    // Return success message
+                    res.status(200).json({
+                        message: 'Like or dislike updated successfully!'
+                    });
+                })
+                .catch((error) => {
+                    // Handle database update error
+                    res.status(400).json({
+                        error: error
+                    });
+                });
+        })
+        .catch((error) => {
+            // Handle sauce not found error
+            res.status(404).json({
+                error: 'Sauce not found!'
+            });
+        });
+};
