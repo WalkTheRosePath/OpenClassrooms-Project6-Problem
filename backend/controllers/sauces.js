@@ -6,11 +6,20 @@ const fs = require('fs');
 exports.createSauce = (req, res, next) => {
     // Construct the image URL using the request protocol and host
     const imageUrl = req.protocol + '://' + req.get('host') + '/images/' + req.file.filename;
+    
+    // Parse the sauce data from the request body
+    const sauceData = JSON.parse(req.body.sauce);
+    
     // Create a new Sauce instance with data from the request
     const sauce = new Sauce({
-        ...req.body,
-        imageUrl: imageUrl
+        ...sauceData,
+        imageUrl: imageUrl,
+        likes: 0,
+        dislikes: 0,
+        usersLiked: [],
+        usersDisliked: []
     });
+  
     // Save the Sauce to the database
     sauce.save()
         .then(() => {
