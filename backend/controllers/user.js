@@ -32,6 +32,11 @@ exports.signup = (req, res, next) => {
                         error: error
                     });
                 });
+        })
+        .catch((error) => {
+            // Handle database error with "Internal Server Error" message
+            console.log(error);
+            res.status(500).json({ error: error.message });
         });
 };
 
