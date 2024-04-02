@@ -1,27 +1,22 @@
 // Import the Sauce model and the fs module for file system operations
+const { error } = require('console');
 const Sauce = require('../models/sauce');
 const fs = require('fs');
 
 // Controller function to create a new Sauce
 exports.createSauce = (req, res, next) => {
-    // Parse the request body
-    req.body.sauce = JSON.parse(req.body.sauce);
     // Construct the image URL using the request protocol and host
-    const url = req.protocol + '://' + req.get('host');
+    const imageUrl = req.protocol + '://' + req.get('host') + '/images/' + req.file.filename;
     // Create a new Sauce instance with data from the request
     const sauce = new Sauce({
-        userId: req.body.sauce.userId
-        name: req.body.sauce.name,
-        manufacturer: req.body.sauce.manufacturer,
-        description: req.body.sauce.description,
-        mainPepper: req.body.sauce.mainPepper,
-        heat: req.body.sauce.heat
+        ...req.body,
+        imageUrl: imageUrl
     });
     // Save the Sauce to the database
     sauce.save().then(
         () => {
             res.status(201).json({
-                message: 'Post saved successfully!'
+                message: 'Sauce saved successfully!'
             });
         }
     ).catch(
@@ -35,9 +30,7 @@ exports.createSauce = (req, res, next) => {
 
 // Controller function to get a single Sauce by its ID
 exports.getOneSauce = (req, res, next) => {
-    Sauce.findOne({
-        _id: req.params.id
-    }).then(
+    Sauce.findOne({ _id: req.params.id }).then(
         (sauce) => {
             res.status(200).json(sauce);
         }
@@ -52,36 +45,16 @@ exports.getOneSauce = (req, res, next) => {
 
 // Controller function to modify a Sauce
 exports.modifySauce = (req, res, next) => {
-    // Initialize a new Sauce object with the provided ID
-    let sauce = new Sauce({ _id: req.params._id });
-    // If a file is uploaded, update the image URL
-    if (req.file) {
-        const url = req.protocol + '://' + req.get('host');
-        req.body.sauce = JSON.parse(req.body.sauce);
-        sauce = {
-            _id: req.params.id,
-            title: req.body.sauce.title,
-            description: req.body.sauce.description,
-            imageUrl: url + '/images/' + req.file.filename,
-            price: req.body.sauce.price,
-            userId: req.body.sauce.userId
-        };
-    } else {
-        // Otherwise, update the Sauce with data from the request body
-        sauce = {
-            _id: req.params.id,
-            title: req.body.title,
-            description: req.body.description,
-            imageUrl: req.body.imageUrl,
-            price: req.body.price,
-            userId: req.body.userId
-        };
-    }
+    const sauce = req.file ? // If a file is uploaded
+        {
+            ...JSON.parse(req.body.sauce),
+            imageUrl: req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
+        } : { ...req.body }; // Otherwise, update with data from request body
     // Update the Sauce in the database
-    Sauce.updateOne({ _id: req.params.id }, sauce).then(
+    Sauce.updateOne({ _id: req.params.id }, { ...sauce, _id: req.params.id }).then(
         () => {
-            res.status(201).json({
-                message: 'Sauce updated successfully!'
+            res.status(200).json({
+                message: "Sauce updated successfully!"
             });
         }
     ).catch(
