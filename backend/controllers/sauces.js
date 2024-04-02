@@ -78,13 +78,13 @@ exports.modifySauce = (req, res, next) => {
     // Update the Sauce in the database
     Sauce.updateOne({ _id: req.params.id }, { ...sauce, _id: req.params.id })
         .then(() => {
-            // Status 200: OK
+            // If the sauce is updated, return a message
             res.status(200).json({
                 message: "Sauce updated successfully!"
             });
         })
         .catch((error) => {
-            // Error 400: Bad Request
+            // If the sauce is not updated, return a "Bad Request" error
             res.status(400).json({
                 error: error
             });
@@ -103,13 +103,13 @@ exports.deleteSauce = (req, res, next) => {
                 // Delete the Sauce from the database
                 Sauce.deleteOne({ _id: req.params.id })
                     .then(() => {
-                        // Status 200: OK
+                        // If the sauce is deleted, return a message
                         res.status(200).json({
                             message: 'Sauce deleted successfully!'
                         });
                     })
                     .catch((error) => {
-                        // Error 400: Bad Request
+                        // If the sauce is not deleted, return a "Bad Request" error
                         res.status(400).json({
                             error: error
                         });
@@ -117,7 +117,7 @@ exports.deleteSauce = (req, res, next) => {
             });
         })
         .catch((error) => {
-            // Error 500: Internal Server Error
+            // Handle unexpected errors or server-side issues
             res.status(500).json({
                 error: error
             });
