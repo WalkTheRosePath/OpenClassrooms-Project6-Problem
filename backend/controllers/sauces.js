@@ -15,28 +15,29 @@ exports.createSauce = (req, res, next) => {
     // Save the Sauce to the database
     sauce.save().then(
         () => {
-            res.status(201).json({
+            res.status(201).json({ // Status 201: Created
                 message: 'Sauce saved successfully!'
             });
         }
     ).catch(
         (error) => {
-            res.status(400).json({
+            res.status(400).json({ // Error 400: Bad Request
                 error: error
             });
         }
     );
 };
 
-// Controller function to get a single Sauce by its ID
+// Controller function to get a single Sauce
 exports.getOneSauce = (req, res, next) => {
+    // Find the Sauce by its ID
     Sauce.findOne({ _id: req.params.id }).then(
         (sauce) => {
-            res.status(200).json(sauce);
+            res.status(200).json(sauce); // Status 200: OK
         }
     ).catch(
         (error) => {
-            res.status(404).json({
+            res.status(404).json({ // Error 404: Not Found
                 error: error
             });
         }
@@ -53,13 +54,13 @@ exports.modifySauce = (req, res, next) => {
     // Update the Sauce in the database
     Sauce.updateOne({ _id: req.params.id }, { ...sauce, _id: req.params.id }).then(
         () => {
-            res.status(200).json({
+            res.status(200).json({ // Status 200: OK
                 message: "Sauce updated successfully!"
             });
         }
     ).catch(
         (error) => {
-            res.status(400).json({
+            res.status(400).json({ // Error 400: Bad Request
                 error: error
             });
         }
@@ -78,17 +79,23 @@ exports.deleteSauce = (req, res, next) => {
                 // Delete the Sauce from the database
                 Sauce.deleteOne({ _id: req.params.id }).then(
                     () => {
-                        res.status(200).json({
-                            message: 'Deleted!'
+                        res.status(200).json({ // Status 200: OK
+                            message: 'Sauce deleted successfully!'
                         });
                     }
                 ).catch(
                     (error) => {
-                        res.status(400).json({
+                        res.status(400).json({ // Error 400: Bad Request
                             error: error
                         });
                     }
                 );
+            });
+        }
+    ).catch(
+        (error) => {
+            res.status(500).json({ // Error 500: Internal Server Error
+                error: error
             });
         }
     );
@@ -99,11 +106,11 @@ exports.getAllSauces = (req, res, next) => {
     // Find all Sauces in the database
     Sauce.find().then(
         (sauces) => {
-            res.status(200).json(sauces);
+            res.status(200).json(sauces); // Status 200: OK
         }
     ).catch(
         (error) => {
-            res.status(400).json({
+            res.status(400).json({ // Error 400: Bad Request
                 error: error
             });
         }
