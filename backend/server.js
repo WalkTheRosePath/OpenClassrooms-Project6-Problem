@@ -7,9 +7,6 @@ const http = require('http');
 // Import the Express application from app.js
 const app = require('./app');
 
-// Destructure error object from the console module
-const { error } = require('console');
-
 // Function to normalize a port value
 const normalizePort = val => {
     const port = parseInt(val, 10);
@@ -27,6 +24,9 @@ const normalizePort = val => {
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+// Create an HTTP server using the Express app
+const server = http.createServer(app);
+
 // Function to handle errors
 const errorHandler = error => {
     // Check if the error is related to server listen
@@ -42,7 +42,7 @@ const errorHandler = error => {
             console.error(bind + ' requires elevated privileges.');
             process.exit(1);
             break;
-        case 'EADORINUSE':
+        case 'EADDRINUSE':
             console.log(bind + ' is already in use.');
             process.exit(1);
             break;
@@ -50,9 +50,6 @@ const errorHandler = error => {
             throw error;
     }
 };
-
-// Create an HTTP server using the Express app
-const server = http.createServer(app);
 
 // Event listener for server errors
 server.on('error', errorHandler);
