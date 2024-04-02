@@ -19,9 +19,12 @@ const storage = multer.diskStorage({
     },
     // Define filename format for uploaded files
     filename: (req, file, callback) => {
-        const name = file.originalname.split(' ').join('_'); // Replace spaces with underscores
-        const extension = MIME_TYPES[file.mimetype]; // Get file extension from MIME type
-        callback(null, name + Date.now() + '.' + extension); // Set filename with unique timestamp
+        // Replace spaces with underscores in the filename
+        const name = file.originalname.split(' ').join('_');
+        // Get file extension from MIME type
+        const extension = MIME_TYPES[file.mimetype];
+        // Set filename with unique timestamp to avoid overwriting existing files
+        callback(null, name + Date.now() + '.' + extension);
     }
 });
 
