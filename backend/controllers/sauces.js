@@ -1,5 +1,4 @@
 // Import the Sauce model and the fs module for file system operations
-const { error } = require('console');
 const Sauce = require('../models/sauce');
 const fs = require('fs');
 
@@ -13,106 +12,105 @@ exports.createSauce = (req, res, next) => {
         imageUrl: imageUrl
     });
     // Save the Sauce to the database
-    sauce.save().then(
-        () => {
-            res.status(201).json({ // Status 201: Created
+    sauce.save()
+        .then(() => {
+            // Status 201: Created
+            res.status(201).json({
                 message: 'Sauce saved successfully!'
             });
         }
-    ).catch(
-        (error) => {
-            res.status(400).json({ // Error 400: Bad Request
+        ).catch((error) => {
+            // Error 400: Bad Request
+            res.status(400).json({
                 error: error
             });
-        }
-    );
+        });
 };
 
 // Controller function to get a single Sauce
 exports.getOneSauce = (req, res, next) => {
     // Find the Sauce by its ID
-    Sauce.findOne({ _id: req.params.id }).then(
-        (sauce) => {
-            res.status(200).json(sauce); // Status 200: OK
-        }
-    ).catch(
-        (error) => {
-            res.status(404).json({ // Error 404: Not Found
+    Sauce.findOne({ _id: req.params.id })
+        .then((sauce) => {
+            // Status 200: OK
+            res.status(200).json(sauce);
+        })
+        .catch((error) => {
+            // Error 404: Not Found
+            res.status(404).json({
                 error: error
             });
-        }
-    );
+        });
 };
 
 // Controller function to modify a Sauce
 exports.modifySauce = (req, res, next) => {
-    const sauce = req.file ? // If a file is uploaded
+    const sauce = req.file ? // If a file is uploaded, parse and include image
         {
             ...JSON.parse(req.body.sauce),
             imageUrl: req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
         } : { ...req.body }; // Otherwise, update with data from request body
     // Update the Sauce in the database
-    Sauce.updateOne({ _id: req.params.id }, { ...sauce, _id: req.params.id }).then(
-        () => {
-            res.status(200).json({ // Status 200: OK
+    Sauce.updateOne({ _id: req.params.id }, { ...sauce, _id: req.params.id })
+        .then(() => {
+            // Status 200: OK
+            res.status(200).json({
                 message: "Sauce updated successfully!"
             });
-        }
-    ).catch(
-        (error) => {
-            res.status(400).json({ // Error 400: Bad Request
+        })
+        .catch((error) => {
+            // Error 400: Bad Request
+            res.status(400).json({
                 error: error
             });
-        }
-    );
+        });
 };
 
 // Controller function to delete a Sauce
 exports.deleteSauce = (req, res, next) => {
     // Find the Sauce by its ID
-    Sauce.findOne({ _id: req.params.id }).then(
-        (sauce) => {
+    Sauce.findOne({ _id: req.params.id })
+        .then((sauce) => {
             // Extract the filename from the imageUrl
             const filename = sauce.imageUrl.split('/images/')[1];
             // Delete the file from the file system
             fs.unlink('images/' + filename, () => {
                 // Delete the Sauce from the database
-                Sauce.deleteOne({ _id: req.params.id }).then(
-                    () => {
-                        res.status(200).json({ // Status 200: OK
+                Sauce.deleteOne({ _id: req.params.id })
+                    .then(() => {
+                        // Status 200: OK
+                        res.status(200).json({
                             message: 'Sauce deleted successfully!'
                         });
-                    }
-                ).catch(
-                    (error) => {
-                        res.status(400).json({ // Error 400: Bad Request
+                    })
+                    .catch((error) => {
+                        // Error 400: Bad Request
+                        res.status(400).json({
                             error: error
                         });
-                    }
-                );
+                    });
             });
-        }
-    ).catch(
-        (error) => {
-            res.status(500).json({ // Error 500: Internal Server Error
+        })
+        .catch((error) => {
+            // Error 500: Internal Server Error
+            res.status(500).json({
                 error: error
             });
-        }
-    );
+        });
 };
 
 // Controller function to get all Sauces
 exports.getAllSauces = (req, res, next) => {
     // Find all Sauces in the database
-    Sauce.find().then(
-        (sauces) => {
-            res.status(200).json(sauces); // Status 200: OK
-        }
-    ).catch(
-        (error) => {
-            res.status(400).json({ // Error 400: Bad Request
+    Sauce.find()
+        .then((sauces) => {
+            // Status 200: OK
+            res.status(200).json(sauces);
+        })
+        .catch((error) => {
+            // Error 400: Bad Request
+            res.status(400).json({
                 error: error
             });
-        }
-    );
+        });
 };
