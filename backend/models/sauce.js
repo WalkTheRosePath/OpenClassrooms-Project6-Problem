@@ -19,5 +19,5 @@ const sauceSchema = mongoose.Schema({
     usersDisliked: { type: [String], default: [] }
 });
 
-// Create a Mongoose model based on the 'thingSchema' schema, named 'Thing'
+// Create a Mongoose model based on the 'sauceSchema' schema, named 'Sauce'
 module.exports = mongoose.model('Sauce', sauceSchema);

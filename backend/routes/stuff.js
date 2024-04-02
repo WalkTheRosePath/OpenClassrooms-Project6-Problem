@@ -16,9 +16,9 @@ const stuffController = require('../controllers/stuff');
 
 // Define routes for 'stuff' endpoints
 router.get('/', auth, stuffController.getAllStuff); // GET request to fetch all 'stuff' items
-router.post('/', auth, multer, stuffController.createThing); // POST request to create a new 'stuff' item
-router.get('/:id', auth, stuffController.getOneThing); // GET request to fetch a single 'stuff' item by ID
-router.put('/:id', auth, multer, stuffController.modifyThing); // PUT request to update a 'stuff' item by ID
-router.delete('/:id', auth, stuffController.deleteThing); // DELETE request to delete a 'stuff' item by ID
+router.post('/', auth, multer, stuffController.createSauce); // POST request to create a new 'stuff' item
+router.get('/:id', auth, stuffController.getOneSauce); // GET request to fetch a single 'stuff' item by ID
+router.put('/:id', auth, multer, stuffController.modifySauce); // PUT request to update a 'stuff' item by ID
+router.delete('/:id', auth, stuffController.deleteSauce); // DELETE request to delete a 'stuff' item by ID
 
 module.exports = router;
