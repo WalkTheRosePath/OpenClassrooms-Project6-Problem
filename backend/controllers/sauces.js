@@ -2,6 +2,38 @@
 const Sauce = require('../models/sauce');
 const fs = require('fs');
 
+// Controller function to get all Sauces
+exports.getAllSauces = (req, res, next) => {
+    // Find all Sauces in the database
+    Sauce.find()
+        .then((sauces) => {
+            // If the sauces are found, return them
+            res.status(200).json(sauces);
+        })
+        .catch((error) => {
+            // If the sauces are not found, return a "Bad Request" error
+            res.status(400).json({
+                error: error
+            });
+        });
+};
+
+// Controller function to get a single Sauce
+exports.getOneSauce = (req, res, next) => {
+    // Find the Sauce by its ID
+    Sauce.findOne({ _id: req.params.id })
+        .then((sauce) => {
+            // If the sauce is found, return it
+            res.status(200).json(sauce);
+        })
+        .catch((error) => {
+            // If the sauce is not found, return a "Bad Request" error
+            res.status(404).json({
+                error: error
+            });
+        });
+};
+
 // Controller function to create a new Sauce
 exports.createSauce = (req, res, next) => {
     // Construct the image URL using the request protocol and host
@@ -23,30 +55,14 @@ exports.createSauce = (req, res, next) => {
     // Save the Sauce to the database
     sauce.save()
         .then(() => {
-            // Status 201: Created
+            // If successfully saved, return a message
             res.status(201).json({
                 message: 'Sauce saved successfully!'
             });
         }
         ).catch((error) => {
-            // Error 400: Bad Request
+            // If the sauce is not saved, return a "Bad Request" error
             res.status(400).json({
-                error: error
-            });
-        });
-};
-
-// Controller function to get a single Sauce
-exports.getOneSauce = (req, res, next) => {
-    // Find the Sauce by its ID
-    Sauce.findOne({ _id: req.params.id })
-        .then((sauce) => {
-            // Status 200: OK
-            res.status(200).json(sauce);
-        })
-        .catch((error) => {
-            // Error 404: Not Found
-            res.status(404).json({
                 error: error
             });
         });
@@ -108,18 +124,3 @@ exports.deleteSauce = (req, res, next) => {
         });
 };
 
-// Controller function to get all Sauces
-exports.getAllSauces = (req, res, next) => {
-    // Find all Sauces in the database
-    Sauce.find()
-        .then((sauces) => {
-            // Status 200: OK
-            res.status(200).json(sauces);
-        })
-        .catch((error) => {
-            // Error 400: Bad Request
-            res.status(400).json({
-                error: error
-            });
-        });
-};
