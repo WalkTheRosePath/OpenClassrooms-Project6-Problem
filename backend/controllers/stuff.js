@@ -1,23 +1,23 @@
-// Import the Thing model and the fs module for file system operations
-const Thing = require('../models/thing');
+// Import the Sauce model and the fs module for file system operations
+const Sauce = require('../models/sauce');
 const fs = require('fs');
 
-// Controller function to create a new Thing
-exports.createThing = (req, res, next) => {
+// Controller function to create a new Sauce
+exports.createSauce = (req, res, next) => {
     // Parse the request body
-    req.body.thing = JSON.parse(req.body.thing);
+    req.body.sauce = JSON.parse(req.body.sauce);
     // Construct the image URL using the request protocol and host
     const url = req.protocol + '://' + req.get('host');
-    // Create a new Thing instance with data from the request
-    const thing = new Thing({
-        title: req.body.thing.title,
-        description: req.body.thing.description,
+    // Create a new Sauce instance with data from the request
+    const sauce = new Sauce({
+        title: req.body.sauce.title,
+        description: req.body.sauce.description,
         imageUrl: url + '/images/' + req.file.filename,
-        price: req.body.thing.price,
-        userId: req.body.thing.userId
+        price: req.body.sauce.price,
+        userId: req.body.sauce.userId
     });
-    // Save the Thing to the database
-    thing.save().then(
+    // Save the Sauce to the database
+    sauce.save().then(
         () => {
             res.status(201).json({
                 message: 'Post saved successfully!'
@@ -32,13 +32,13 @@ exports.createThing = (req, res, next) => {
     );
 };
 
-// Controller function to get a single Thing by its ID
-exports.getOneThing = (req, res, next) => {
-    Thing.findOne({
+// Controller function to get a single Sauce by its ID
+exports.getOneSauce = (req, res, next) => {
+    Sauce.findOne({
         _id: req.params.id
     }).then(
-        (thing) => {
-            res.status(200).json(thing);
+        (sauce) => {
+            res.status(200).json(sauce);
         }
     ).catch(
         (error) => {
@@ -49,25 +49,25 @@ exports.getOneThing = (req, res, next) => {
     );
 };
 
-// Controller function to modify a Thing
-exports.modifyThing = (req, res, next) => {
-    // Initialize a new Thing object with the provided ID
-    let thing = new Thing({ _id: req.params._id });
+// Controller function to modify a Sauce
+exports.modifySauce = (req, res, next) => {
+    // Initialize a new Sauce object with the provided ID
+    let sauce = new Sauce({ _id: req.params._id });
     // If a file is uploaded, update the image URL
     if (req.file) {
         const url = req.protocol + '://' + req.get('host');
-        req.body.thing = JSON.parse(req.body.thing);
-        thing = {
+        req.body.sauce = JSON.parse(req.body.sauce);
+        sauce = {
             _id: req.params.id,
-            title: req.body.thing.title,
-            description: req.body.thing.description,
+            title: req.body.sauce.title,
+            description: req.body.sauce.description,
             imageUrl: url + '/images/' + req.file.filename,
-            price: req.body.thing.price,
-            userId: req.body.thing.userId
+            price: req.body.sauce.price,
+            userId: req.body.sauce.userId
         };
     } else {
-        // Otherwise, update the Thing with data from the request body
-        thing = {
+        // Otherwise, update the Sauce with data from the request body
+        sauce = {
             _id: req.params.id,
             title: req.body.title,
             description: req.body.description,
@@ -76,11 +76,11 @@ exports.modifyThing = (req, res, next) => {
             userId: req.body.userId
         };
     }
-    // Update the Thing in the database
-    Thing.updateOne({ _id: req.params.id }, thing).then(
+    // Update the Sauce in the database
+    Sauce.updateOne({ _id: req.params.id }, sauce).then(
         () => {
             res.status(201).json({
-                message: 'Thing updated successfully!'
+                message: 'Sauce updated successfully!'
             });
         }
     ).catch(
@@ -92,17 +92,17 @@ exports.modifyThing = (req, res, next) => {
     );
 };
 
-// Controller function to delete a Thing
-exports.deleteThing = (req, res, next) => {
-    // Find the Thing by its ID
-    Thing.findOne({ _id: req.params.id }).then(
-        (thing) => {
+// Controller function to delete a Sauce
+exports.deleteSauce = (req, res, next) => {
+    // Find the Sauce by its ID
+    Sauce.findOne({ _id: req.params.id }).then(
+        (sauce) => {
             // Extract the filename from the imageUrl
-            const filename = thing.imageUrl.split('/images/')[1];
+            const filename = sauce.imageUrl.split('/images/')[1];
             // Delete the file from the file system
             fs.unlink('images/' + filename, () => {
-                // Delete the Thing from the database
-                Thing.deleteOne({ _id: req.params.id }).then(
+                // Delete the Sauce from the database
+                Sauce.deleteOne({ _id: req.params.id }).then(
                     () => {
                         res.status(200).json({
                             message: 'Deleted!'
@@ -120,12 +120,12 @@ exports.deleteThing = (req, res, next) => {
     );
 };
 
-// Controller function to get all Things
+// Controller function to get all Sauces
 exports.getAllStuff = (req, res, next) => {
-    // Find all Things in the database
-    Thing.find().then(
-        (things) => {
-            res.status(200).json(things);
+    // Find all Sauces in the database
+    Sauce.find().then(
+        (sauces) => {
+            res.status(200).json(sauces);
         }
     ).catch(
         (error) => {
