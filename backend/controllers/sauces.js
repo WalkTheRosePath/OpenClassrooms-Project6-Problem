@@ -2,7 +2,7 @@
 const Sauce = require('../models/sauce');
 const fs = require('fs');
 
-// Controller function to get all Sauces
+// Controller function to get all Sauces and return them as JSON response
 exports.getAllSauces = (req, res, next) => {
     // Find all Sauces in the database
     Sauce.find()
@@ -18,7 +18,7 @@ exports.getAllSauces = (req, res, next) => {
         });
 };
 
-// Controller function to get a single Sauce
+// Controller function to get a single Sauce and return it as JSON response
 exports.getOneSauce = (req, res, next) => {
     // Find the Sauce by its ID
     Sauce.findOne({ _id: req.params.id })
@@ -34,7 +34,7 @@ exports.getOneSauce = (req, res, next) => {
         });
 };
 
-// Controller function to create a new Sauce
+// Controller function to create a new Sauce based on the data received in the request body
 exports.createSauce = (req, res, next) => {
     // Construct the image URL using the request protocol and host
     const imageUrl = req.protocol + '://' + req.get('host') + '/images/' + req.file.filename;
@@ -68,7 +68,7 @@ exports.createSauce = (req, res, next) => {
         });
 };
 
-// Controller function to modify a Sauce
+// Controller function to modify a Sauce based on the ID provided in the request parameters
 exports.modifySauce = (req, res, next) => {
     const sauce = req.file ? // If a file is uploaded, parse and include image
         {
@@ -91,7 +91,7 @@ exports.modifySauce = (req, res, next) => {
         });
 };
 
-// Controller function to delete a Sauce
+// Controller function to delete a Sauce by its ID from the database and deletes its image file from the file system
 exports.deleteSauce = (req, res, next) => {
     // Find the Sauce by its ID
     Sauce.findOne({ _id: req.params.id })
@@ -124,7 +124,7 @@ exports.deleteSauce = (req, res, next) => {
         });
 };
 
-// Controller function to like or dislike a Sauce
+// Controller function to like or dislike a Sauce by updating likes and dislikes count and maintains arrays of user IDs who liked or disliked
 exports.likeOrDislikeSauce = (req, res, next) => {
     const { userId, like } = req.body;
     const sauceId = req.params.id;
