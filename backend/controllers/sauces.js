@@ -149,6 +149,8 @@ exports.likeOrDislikeSauce = (req, res, next) => {
             const alreadyDisliked = sauce.usersDisliked.includes(userId);
 
             // Update likes and dislikes accordingly
+
+            // If user likes (and did not previously like or dislike)
             if (like === 1 && !alreadyLiked && !alreadyDisliked) {
                 // Like the sauce
                 sauce.likes++;
@@ -160,7 +162,9 @@ exports.likeOrDislikeSauce = (req, res, next) => {
                     sauce.usersDisliked.splice(index, 1);
                     sauce.dislikes--;
                 }
-            } else if (like === -1 && !alreadyLiked && !alreadyDisliked) {
+            }
+            // If user dislikes (and did not previously like or dislike)
+            else if (like === -1 && !alreadyLiked && !alreadyDisliked) {
                 // Dislike the sauce
                 sauce.dislikes++;
                 sauce.usersDisliked.push(userId);
@@ -171,14 +175,18 @@ exports.likeOrDislikeSauce = (req, res, next) => {
                     sauce.usersLiked.splice(index, 1);
                     sauce.likes--;
                 }
-            } else if (like === 0 && alreadyLiked) {
+            }
+            // If user likes (but already previously liked)
+            else if (like === 0 && alreadyLiked) {
                 // Cancel like
                 sauce.likes--;
                 const index = sauce.usersLiked.indexOf(userId);
                 if (index !== -1) {
                     sauce.usersLiked.splice(index, 1);
                 }
-            } else if (like === 0 && alreadyDisliked) {
+            }
+            // If user dislikes (but already previously disliked)
+            else if (like === 0 && alreadyDisliked) {
                 // Cancel dislike
                 sauce.dislikes--;
                 const index = sauce.usersDisliked.indexOf(userId);
