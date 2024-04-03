@@ -18,7 +18,7 @@ exports.getOneSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
             if (!sauce) {
-                res.status(404).json({ error: new Error('Sauce not found!').message });
+                res.status(404).json({ error: 'Sauce not found!' });
             } else {
                 res.status(200).json(sauce);
             }
@@ -68,7 +68,7 @@ exports.modifySauce = (req, res, next) => {
                 sauceData = JSON.parse(req.body.sauce);
             } catch (error) {
                 // Handle parsing error
-                res.status(400).json({ error: new Error("Invalid sauce data format").message });
+                res.status(400).json({ error: 'Invalid sauce data format!' });
                 return;
             }
         }
@@ -91,7 +91,7 @@ exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
             if (!sauce) {
-                res.status(404).json({ error: new Error('Sauce not found!').message });
+                res.status(404).json({ error: 'Sauce not found!' });
             } else {
                 // Extract the filename from the imageUrl
                 const filename = sauce.imageUrl.split('/images/')[1];
@@ -121,7 +121,7 @@ exports.likeOrDislikeSauce = (req, res, next) => {
     Sauce.findOne({ _id: sauceId })
         .then((sauce) => {
             if (!sauce) {
-                res.status(404).json({ error: new Error('Sauce not found!').message });
+                res.status(404).json({ error: 'Sauce not found!' });
                 return;
             }
 
@@ -185,6 +185,6 @@ exports.likeOrDislikeSauce = (req, res, next) => {
         })
         .catch((error) => {
             // Handle sauce not found error
-            res.status(404).json({ error: new Error('Sauce not found!').message });
+            res.status(404).json({ error: 'Sauce not found!' });
         });
 };
