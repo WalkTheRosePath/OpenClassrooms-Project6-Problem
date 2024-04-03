@@ -2,6 +2,7 @@
  * Middleware for handling file uploads using Multer
  */
 
+// Import the required modules
 const multer = require('multer');
 
 // Define MIME types and corresponding file extensions

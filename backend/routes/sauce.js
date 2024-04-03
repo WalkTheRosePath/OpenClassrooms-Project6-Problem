@@ -4,6 +4,7 @@
  * Attach corresponding controller functions to handle the logic of each endpoint
  */
 
+// Import the required modules
 const express = require('express');
 const router = express.Router();
 

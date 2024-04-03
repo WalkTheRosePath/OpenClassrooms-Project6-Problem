@@ -3,6 +3,7 @@
  * Enforce uniqueness of email field using the 'mongoose-unique-validator' plugin
  */
 
+// Import the required modules
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 

@@ -2,6 +2,7 @@
  * Define user authentication routes for signup and login
  */
 
+// Import the required modules
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user');

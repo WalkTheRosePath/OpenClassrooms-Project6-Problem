@@ -4,6 +4,7 @@
  * and generate JWT tokens for authentication
  */
 
+// Import the required modules
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');

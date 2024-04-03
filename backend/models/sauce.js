@@ -2,6 +2,7 @@
  * Define a Mongoose schema for representing 'Sauce' objects in the MongoDB database
  */
 
+// Import the required modules
 const mongoose = require('mongoose');
 
 // Define the schema for 'Sauce' objects

@@ -1,8 +1,10 @@
 /**
- * Main application file for setting up the Express server and defining routes
- * Handles connections to MongoDB Atlas and mounts API routes for sauce and user endpoints
+ * Entry point for the application
+ * Initializes the Express server, connects to MongoDB Atlas,
+ * and defines routes for handling user authentication (signup and login)
  */
 
+// Import the required modules
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');

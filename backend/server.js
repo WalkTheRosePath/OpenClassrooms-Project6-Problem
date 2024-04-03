@@ -1,4 +1,9 @@
-// Import and configure dotenv to load environment variables from a .env file
+/**
+ * Entry point for the application
+ * Initializes the HTTP server, sets up error handling, and starts listening on the specified port
+ */
+
+// Import the required modules
 require('dotenv').config();
 
 // Import the HTTP module for creating an HTTP server

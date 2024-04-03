@@ -3,6 +3,7 @@
  * This middleware verifies the JWT token in the authorization header of incoming requests
  */
 
+// Import the required modules
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
