@@ -1,6 +1,6 @@
 /**
  * Define Express routes for handling 'sauces' endpoints
- * Utilize middleware functions for authentication and file upload
+ * Use middleware functions for authentication and file upload
  * Attach corresponding controller functions to handle the logic of each endpoint
  */
 
@@ -15,6 +15,7 @@ const multer = require('../middleware/multer-config');
 const saucesController = require('../controllers/sauces');
 
 // Define routes for 'sauces' endpoints
+//TODO Check routes on specs
 router.get('/', auth, saucesController.getAllSauces); // GET request to fetch all 'sauces' items
 router.get('/:id', auth, saucesController.getOneSauce); // GET request to fetch a single 'sauce' item by ID
 router.post('/', auth, multer, saucesController.createSauce); // POST request to create a new 'sauce' item
