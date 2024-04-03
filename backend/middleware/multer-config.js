@@ -28,5 +28,17 @@ const storage = multer.diskStorage({
     }
 });
 
+// Combine existing storage with the new one
+// const combinedStorage = multer.diskStorage({
+//     destination: storage.destination,
+//     filename: (req, file, callback) => {
+//         const ext = path.extname(file.originalname);
+//         callback(null, Date.now() + ext); // Unique filename with current timestamp
+//     }
+// });
+
+// Export Multer middleware configured with combined storage settings for single file uploads
+// module.exports = multer({ storage: combinedStorage }).single('image');
+
 // Export Multer middleware configured with storage settings for single file uploads
 module.exports = multer({ storage: storage }).single('image');
