@@ -28,9 +28,7 @@ exports.signup = (req, res, next) => {
                 })
                 .catch((error) => {
                     // If not saved, return "Internal Server Error" message
-                    res.status(500).json({
-                        error: error
-                    });
+                    res.status(500).json({ error: error.message });
                 });
         })
         .catch((error) => {

@@ -1,36 +1,30 @@
-// Import the Sauce model and the fs module for file system operations
+// Import the required modules
 const Sauce = require('../models/sauce');
 const fs = require('fs');
 
 // Controller function to get all Sauces and return them as JSON response
 exports.getAllSauces = (req, res, next) => {
-    // Find all Sauces in the database
     Sauce.find()
         .then((sauces) => {
-            // If the sauces are found, return them
             res.status(200).json(sauces);
         })
         .catch((error) => {
-            // If the sauces are not found, return a "Bad Request" error
-            res.status(400).json({
-                error: error
-            });
+            res.status(400).json({ error: error.message });
         });
 };
 
-// Controller function to get a single Sauce and return it as JSON response
+// Controller function to get a single Sauce by its ID and return it as JSON response
 exports.getOneSauce = (req, res, next) => {
-    // Find the Sauce by its ID
     Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
-            // If the sauce is found, return it
-            res.status(200).json(sauce);
+            if (!sauce) {
+                res.status(404).json({ error: new Error('Sauce not found!').message });
+            } else {
+                res.status(200).json(sauce);
+            }
         })
         .catch((error) => {
-            // If the sauce is not found, return a "Bad Request" error
-            res.status(404).json({
-                error: error
-            });
+            res.status(500).json({ error: error.message });
         });
 };
 
@@ -55,16 +49,10 @@ exports.createSauce = (req, res, next) => {
     // Save the Sauce to the database
     sauce.save()
         .then(() => {
-            // If saved successfully, return a message
-            res.status(201).json({
-                message: 'Sauce saved successfully!'
-            });
+            res.status(201).json({ message: 'Sauce saved successfully!' });
         }
         ).catch((error) => {
-            // If the sauce is not saved, return a "Bad Request" error
-            res.status(400).json({
-                error: error
-            });
+            res.status(400).json({ error: error.message });
         });
 };
 
@@ -80,9 +68,8 @@ exports.modifySauce = (req, res, next) => {
                 sauceData = JSON.parse(req.body.sauce);
             } catch (error) {
                 // Handle parsing error
-                return res.status(400).json({
-                    error: "Invalid sauce data format"
-                });
+                res.status(400).json({ error: new Error("Invalid sauce data format").message });
+                return;
             }
         }
         sauceData.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
@@ -91,16 +78,10 @@ exports.modifySauce = (req, res, next) => {
     // Update the Sauce in the database
     Sauce.updateOne({ _id: req.params.id }, sauceData)
         .then(() => {
-            // If the sauce is updated, return a message
-            res.status(200).json({
-                message: "Sauce updated successfully!"
-            });
+            res.status(200).json({ message: "Sauce updated successfully!" });
         })
         .catch((error) => {
-            // If the sauce is not updated, return a "Bad Request" error
-            res.status(400).json({
-                error: error
-            });
+            res.status(400).json({ error: error.message });
         });
 };
 
@@ -109,31 +90,26 @@ exports.deleteSauce = (req, res, next) => {
     // Find the Sauce by its ID
     Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
-            // Extract the filename from the imageUrl
-            const filename = sauce.imageUrl.split('/images/')[1];
-            // Delete the file from the file system
-            fs.unlink('images/' + filename, () => {
-                // Delete the Sauce from the database
-                Sauce.deleteOne({ _id: req.params.id })
-                    .then(() => {
-                        // If the sauce is deleted, return a message
-                        res.status(200).json({
-                            message: 'Sauce deleted successfully!'
+            if (!sauce) {
+                res.status(404).json({ error: new Error('Sauce not found!').message });
+            } else {
+                // Extract the filename from the imageUrl
+                const filename = sauce.imageUrl.split('/images/')[1];
+                // Delete the file from the file system
+                fs.unlink('images/' + filename, () => {
+                    // Delete the Sauce from the database
+                    Sauce.deleteOne({ _id: req.params.id })
+                        .then(() => {
+                            res.status(200).json({ message: 'Sauce deleted successfully!' });
+                        })
+                        .catch((error) => {
+                            res.status(400).json({ error: error.message });
                         });
-                    })
-                    .catch((error) => {
-                        // If the sauce is not deleted, return a "Bad Request" error
-                        res.status(400).json({
-                            error: error
-                        });
-                    });
-            });
+                });
+            }
         })
         .catch((error) => {
-            // Handle unexpected errors or server-side issues
-            res.status(500).json({
-                error: error
-            });
+            res.status(500).json({ error: error.message });
         });
 };
 
@@ -144,11 +120,14 @@ exports.likeOrDislikeSauce = (req, res, next) => {
 
     Sauce.findOne({ _id: sauceId })
         .then((sauce) => {
+            if (!sauce) {
+                res.status(404).json({ error: new Error('Sauce not found!').message });
+                return;
+            }
+
             // Check if the user has already liked or disliked the sauce
             const alreadyLiked = sauce.usersLiked.includes(userId);
             const alreadyDisliked = sauce.usersDisliked.includes(userId);
-
-            // Update likes and dislikes accordingly
 
             // If user likes (and did not previously like or dislike)
             if (like === 1 && !alreadyLiked && !alreadyDisliked) {
@@ -198,22 +177,14 @@ exports.likeOrDislikeSauce = (req, res, next) => {
             // Update the sauce in the database
             Sauce.updateOne({ _id: sauceId }, sauce)
                 .then(() => {
-                    // Return success message
-                    res.status(200).json({
-                        message: 'Like or dislike updated successfully!'
-                    });
+                    res.status(200).json({ message: 'Like or dislike updated successfully!' });
                 })
                 .catch((error) => {
-                    // Handle database update error
-                    res.status(400).json({
-                        error: error
-                    });
+                    res.status(400).json({ error: error.message });
                 });
         })
         .catch((error) => {
             // Handle sauce not found error
-            res.status(404).json({
-                error: 'Sauce not found!'
-            });
+            res.status(404).json({ error: new Error('Sauce not found!').message });
         });
 };
