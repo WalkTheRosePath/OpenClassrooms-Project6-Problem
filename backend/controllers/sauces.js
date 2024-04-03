@@ -38,10 +38,10 @@ exports.getOneSauce = (req, res, next) => {
 exports.createSauce = (req, res, next) => {
     // Construct the image URL using the request protocol and host
     const imageUrl = req.protocol + '://' + req.get('host') + '/images/' + req.file.filename;
-    
+
     // Parse the sauce data from the request body
     const sauceData = JSON.parse(req.body.sauce);
-    
+
     // Create a new Sauce instance with data from the request
     const sauce = new Sauce({
         ...sauceData,
@@ -51,7 +51,7 @@ exports.createSauce = (req, res, next) => {
         usersLiked: [],
         usersDisliked: []
     });
-  
+
     // Save the Sauce to the database
     sauce.save()
         .then(() => {
@@ -72,6 +72,8 @@ exports.createSauce = (req, res, next) => {
 exports.modifySauce = (req, res, next) => {
     // Check if an image is uploaded
     let sauceData = req.body;
+
+    // If an image is uploaded, update imageUrl
     if (req.file) {
         if (req.body.sauce) {
             try {
@@ -83,10 +85,9 @@ exports.modifySauce = (req, res, next) => {
                 });
             }
         }
-        // If an image is uploaded, update imageUrl
         sauceData.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
-    } 
-    
+    }
+
     // Update the Sauce in the database
     Sauce.updateOne({ _id: req.params.id }, sauceData)
         .then(() => {
