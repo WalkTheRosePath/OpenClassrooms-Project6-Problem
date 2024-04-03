@@ -70,13 +70,25 @@ exports.createSauce = (req, res, next) => {
 
 // Controller function to modify a Sauce based on the ID provided in the request parameters
 exports.modifySauce = (req, res, next) => {
-    const sauce = req.file ? // If a file is uploaded, parse and include image
-        {
-            ...JSON.parse(req.body.sauce),
-            imageUrl: req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
-        } : { ...req.body }; // Otherwise, update with data from request body
+    // Check if an image is uploaded
+    let sauceData = req.body;
+    if (req.file) {
+        if (req.body.sauce) {
+            try {
+                sauceData = JSON.parse(req.body.sauce);
+            } catch (error) {
+                // Handle parsing error
+                return res.status(400).json({
+                    error: "Invalid sauce data format"
+                });
+            }
+        }
+        // If an image is uploaded, update imageUrl
+        sauceData.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
+    } 
+    
     // Update the Sauce in the database
-    Sauce.updateOne({ _id: req.params.id }, { ...sauce, _id: req.params.id })
+    Sauce.updateOne({ _id: req.params.id }, sauceData)
         .then(() => {
             // If the sauce is updated, return a message
             res.status(200).json({
