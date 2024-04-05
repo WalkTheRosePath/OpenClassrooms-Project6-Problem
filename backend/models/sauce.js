@@ -7,7 +7,6 @@ const mongoose = require('mongoose');
 
 // Define the schema for 'Sauce' objects
 const sauceSchema = mongoose.Schema({
-    // userId: { type: mongoose.Types.ObjectId, required: true }, // TODO Check here for bug if 'String' type isn't working
     userId: { type: String, required: true },
     name: { type: String, required: true },
     manufacturer: { type: String, required: true },
