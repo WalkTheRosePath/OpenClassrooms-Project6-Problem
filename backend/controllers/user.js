@@ -8,6 +8,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/user');
+const { error } = require('console');
 const { errorHandler } = require('../utils');
 
 // Controller function for user signup
@@ -41,8 +42,8 @@ exports.login = (req, res, next) => {
     // Find user by email in the database
     UserModel.findOne({ email: req.body.email })
         .then((user) => {
+            // If user is not found
             if (!user) {
-                // If user is not found, return an error message
                 return res.status(401).json({
                     error: new Error('Incorrect username or password!').message
                 });
@@ -50,7 +51,7 @@ exports.login = (req, res, next) => {
             // Compare passwords using bcrypt
             bcrypt.compare(req.body.password, user.password)
                 .then((valid) => {
-                    // If password is incorrect, return an error message
+                    // If password is incorrect
                     if (!valid) {
                         return res.status(401).json({
                             error: new Error('Incorrect username or password!').message
