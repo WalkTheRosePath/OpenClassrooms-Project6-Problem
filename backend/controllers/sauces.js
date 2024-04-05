@@ -1,10 +1,3 @@
-/**
- * Controller functions for managing Sauce resources
- * These functions handle CRUD operations for Sauce objects,
- * including creation, retrieval, modification, and deletion.
- */
-
-
 // Import the required modules
 const fs = require('fs');
 const SauceModel = require('../models/sauce');

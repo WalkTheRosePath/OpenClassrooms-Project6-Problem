@@ -1,8 +1,8 @@
 /**
- * Middleware for handling single file uploads using Multer
+ * Middleware for handling file uploads using Multer
  */
 
-// Import the required module
+// Import the required modules
 const multer = require('multer');
 
 // Define MIME types and corresponding file extensions
@@ -29,4 +29,5 @@ const storage = multer.diskStorage({
     }
 });
 
+// Export Multer middleware configured with storage settings for single file uploads
 module.exports = multer({ storage: storage }).single('image');
