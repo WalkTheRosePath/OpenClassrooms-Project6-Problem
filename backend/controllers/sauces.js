@@ -2,7 +2,8 @@
 const fs = require('fs');
 
 const SauceModel = require('../models/sauce');
-const utils = require('../utils')
+const utils = require('../utils');
+const { error } = require('console');
 
 // Controller function to get all Sauces and return them as JSON response
 exports.getAllSauces = (req, res) => {
@@ -117,6 +118,11 @@ exports.deleteSauce = (req, res) => {
 exports.likeOrDislikeSauce = (req, res) => {
     const { userId, like } = req.body;
     const sauceId = req.params.id;
+
+    // Validate the 'like' parameter to only accept specific values
+    if (![1, 0, -1].includes(like)) {
+        return res.status(400).json({ error: 'Invalid value for "like" parameter.' });
+    }
 
     SauceModel.findOne({ _id: sauceId })
         .then((sauce) => {
