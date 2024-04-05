@@ -3,7 +3,9 @@ const fs = require('fs');
 
 const SauceModel = require('../models/sauce');
 const utils = require('../utils');
-const { error } = require('console');
+const { error } = require('console'); // TODO Check if this line can be deleted
+const { errorHandler } = require('../utils');
+
 
 // Controller function to get all Sauces and return them as JSON response
 exports.getAllSauces = (req, res) => {
@@ -27,7 +29,7 @@ exports.getOneSauce = (req, res) => {
             }
         })
         .catch((error) => {
-            res.status(500).json({ error: error.message });
+            errorHandler(res, error);
         });
 };
 
@@ -110,7 +112,7 @@ exports.deleteSauce = (req, res) => {
             }
         })
         .catch((error) => {
-            res.status(500).json({ error: error.message });
+            errorHandler(res, error);
         });
 };
 

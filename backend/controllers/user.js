@@ -8,6 +8,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/user');
+const { errorHandler } = require('../utils');
 
 // Controller function for user signup
 exports.signup = (req, res, next) => {
@@ -22,20 +23,16 @@ exports.signup = (req, res, next) => {
             // Save the user to the database
             user.save()
                 .then(() => {
-                    // If saved successfully, return a message
                     res.status(201).json({
                         message: 'User added successfully!'
                     });
                 })
                 .catch((error) => {
-                    // If not saved, return "Internal Server Error" message
-                    res.status(500).json({ error: error.message });
+                    errorHandler(res, error);
                 });
         })
         .catch((error) => {
-            // Handle database error with "Internal Server Error" message
-            console.log(error);
-            res.status(500).json({ error: error.message });
+            errorHandler(res, error);
         });
 };
 
@@ -69,14 +66,10 @@ exports.login = (req, res, next) => {
                     res.status(200).json({ userId: user._id, token });
                 })
                 .catch((error) => {
-                    // Handle bcrypt error with "Internal Server Error" message
-                    console.log(error);
-                    res.status(500).json({ error: error.message });
+                    errorHandler(res, error);
                 });
         })
         .catch((error) => {
-            // Handle database error with "Internal Server Error" message
-            console.log(error);
-            res.status(500).json({ error: error.message });
+            errorHandler(res, error);
         });
 };
