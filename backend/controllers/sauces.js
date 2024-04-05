@@ -8,9 +8,9 @@
 // Import the required modules
 const fs = require('fs');
 const SauceModel = require('../models/sauce');
-const utils = require('../utils');
+const utils = require('../middleware/utils');
 const { error } = require('console');
-const { errorHandler } = require('../utils');
+const { errorHandler } = require('../middleware/utils');
 
 
 // Controller function to get all Sauces and return them as JSON response

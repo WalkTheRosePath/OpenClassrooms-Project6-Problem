@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/user');
 const { error } = require('console');
-const { errorHandler } = require('../utils');
+const { errorHandler } = require('../middleware/utils');
 
 // Controller function for user signup
 exports.signup = (req, res, next) => {
