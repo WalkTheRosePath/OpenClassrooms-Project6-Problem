@@ -6,7 +6,7 @@
 const multer = require('multer');
 
 // Define MIME types and corresponding file extensions
-const MIME_TYPES = {
+const mimeTypes = {
     'image/jpg': 'jpg',
     'image/jpeg': 'jpg',
     'image/png': 'png'
@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
         // Replace spaces with underscores in the filename
         const name = file.originalname.split(' ').join('_');
         // Get file extension from MIME type
-        const extension = MIME_TYPES[file.mimetype];
+        const extension = mimeTypes[file.mimetype];
         // Set filename with unique timestamp to avoid overwriting existing files
         callback(null, name + Date.now() + '.' + extension);
     }

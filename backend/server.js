@@ -17,7 +17,7 @@ app.set('port', port);
 const server = http.createServer(app);
 
 // Function to handle errors
-const errorHandler = error => {
+const handleErrors = error => {
     // Check if the error is related to server listen
     if (error.syscall !== 'listen') {
         throw error;
@@ -41,7 +41,7 @@ const errorHandler = error => {
 };
 
 // Event listener for server errors
-server.on('error', errorHandler);
+server.on('error', handleErrors);
 
 // Event listener for server listening
 server.on('listening', () => {

@@ -59,7 +59,7 @@ exports.login = (req, res, next) => {
                             error: new Error('Incorrect username or password!').message
                         });
                     }
-                    // Generate JWT token for authentication
+                    // Generate JWT token for user authentication
                     const token = jwt.sign(
                         { userId: user._id },
                         'RANDOM_TOKEN_SECRET',

@@ -35,7 +35,7 @@ exports.createSauce = (req, res) => {
     // Create a new Sauce instance with data from the request
     const sauceDocument = new SauceModel({
         ...JSON.parse(req.body.sauce),
-        imageUrl: utils.createImageUrl(req),
+        imageUrl: utils.generateImageUrl(req),
         likes: 0,
         dislikes: 0,
         usersLiked: [],
@@ -69,7 +69,7 @@ exports.modifySauce = (req, res) => {
                     return;
                 }
             }
-            sauceData.imageUrl = utils.createImageUrl(req)
+            sauceData.imageUrl = utils.generateImageUrl(req)
         }
     }
 

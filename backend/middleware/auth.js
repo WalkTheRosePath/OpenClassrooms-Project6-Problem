@@ -23,7 +23,7 @@ module.exports = (req, res, next) => {
             error: 'Invalid user ID'
         });
     } else {
-        // Proceed to the next middleware if authentication is successful
+        // Proceed to the next middleware if user authentication is successful
         next();
     }
 };

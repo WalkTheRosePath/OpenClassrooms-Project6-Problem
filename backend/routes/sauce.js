@@ -8,7 +8,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Import middleware functions for authentication and file upload
+// Import middleware functions for user authentication and file upload
 const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');
 
