@@ -20,7 +20,7 @@ exports.getOneSauce = (req, res) => {
     SauceModel.findOne({ _id: req.params.id })
         .then((sauce) => {
             if (!sauce) {
-                res.status(404).json({ error: 'Sauce not found!' });
+                res.status(404).json({ error: 'Failed to find the sauce with the given ID!' });
             } else {
                 res.status(200).json(sauce);
             }
@@ -89,7 +89,7 @@ exports.deleteSauce = (req, res) => {
     SauceModel.findOne({ _id: req.params.id })
         .then((sauce) => {
             if (!sauce) {
-                res.status(404).json({ error: 'Sauce not found!' });
+                res.status(404).json({ error: 'Failed to find the sauce with the given ID!' });
             } else {
                 // Extract the filename from the imageUrl
                 const filename = sauce.imageUrl.split('/images/')[1];
@@ -121,7 +121,7 @@ exports.likeOrDislikeSauce = (req, res) => {
     SauceModel.findOne({ _id: sauceId })
         .then((sauce) => {
             if (!sauce) {
-                res.status(404).json({ error: 'Sauce not found!' });
+                res.status(404).json({ error: 'Failed to find the sauce with the given ID!' });
                 return;
             }
 
@@ -185,6 +185,6 @@ exports.likeOrDislikeSauce = (req, res) => {
         })
         .catch((error) => {
             // Handle sauce not found error
-            res.status(404).json({ error: 'Sauce not found!' });
+            res.status(404).json({ error: 'Failed to find the sauce with the given ID!' });
         });
 };
