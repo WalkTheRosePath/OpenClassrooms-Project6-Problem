@@ -123,7 +123,6 @@ exports.likeOrDislikeSauce = (req, res) => {
         return res.status(400).json({ error: 'Invalid value for "like" parameter.' });
     }
 
-    // Find a sauce by its ID
     SauceModel.findOne({ _id: sauceId })
         .then((sauce) => {
             if (!sauce) {
@@ -140,7 +139,7 @@ exports.likeOrDislikeSauce = (req, res) => {
                 sauce.likes++;
                 sauce.usersLiked.push(userId);
 
-                // Remove user from 'usersDisliked' array if present
+                // Remove user from usersDisliked array if present
                 const index = sauce.usersDisliked.indexOf(userId);
                 if (index !== -1) {
                     sauce.usersDisliked.splice(index, 1);
@@ -152,7 +151,7 @@ exports.likeOrDislikeSauce = (req, res) => {
                 sauce.dislikes++;
                 sauce.usersDisliked.push(userId);
 
-                // Remove user from 'usersLiked' array if present
+                // Remove user from usersLiked array if present
                 const index = sauce.usersLiked.indexOf(userId);
                 if (index !== -1) {
                     sauce.usersLiked.splice(index, 1);
