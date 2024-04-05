@@ -1,8 +1,9 @@
 // Import the required modules
 const fs = require('fs');
+
 const SauceModel = require('../models/sauce');
 const utils = require('../utils');
-const { error } = require('console');
+const { error } = require('console'); // TODO Check if this line can be deleted
 const { errorHandler } = require('../utils');
 
 
@@ -66,6 +67,7 @@ exports.modifySauce = (req, res) => {
                 try {
                     sauceData = JSON.parse(req.body.sauce);
                 } catch (error) {
+                    // Handle parsing error
                     res.status(400).json({ error: 'Invalid sauce data format!' });
                     return;
                 }
@@ -97,6 +99,7 @@ exports.deleteSauce = (req, res) => {
                 console.log(filename)
                 // Delete the file from the file system
                 fs.unlink('images/' + filename, () => {
+                    // res.status(200).json({ message: 'Sauce not deleted!' });
                     // Delete the Sauce from the database
                     SauceModel.deleteOne({ _id: req.params.id })
                         .then(() => {
@@ -134,40 +137,44 @@ exports.likeOrDislikeSauce = (req, res) => {
             const alreadyLiked = sauce.usersLiked.includes(userId);
             const alreadyDisliked = sauce.usersDisliked.includes(userId);
 
-            // Like the sauce
+            // If user likes (and did not previously like or dislike)
             if (like === 1 && !alreadyLiked && !alreadyDisliked) {
+                // Like the sauce
                 sauce.likes++;
                 sauce.usersLiked.push(userId);
 
-                // Remove user from usersDisliked array if present
+                // Remove user from usersDisliked array if already present
                 const index = sauce.usersDisliked.indexOf(userId);
                 if (index !== -1) {
                     sauce.usersDisliked.splice(index, 1);
                     sauce.dislikes--;
                 }
             }
-            // Dislike the sauce
+            // If user dislikes (and did not previously like or dislike)
             else if (like === -1 && !alreadyLiked && !alreadyDisliked) {
+                // Dislike the sauce
                 sauce.dislikes++;
                 sauce.usersDisliked.push(userId);
 
-                // Remove user from usersLiked array if present
+                // Remove user from usersLiked array if already present
                 const index = sauce.usersLiked.indexOf(userId);
                 if (index !== -1) {
                     sauce.usersLiked.splice(index, 1);
                     sauce.likes--;
                 }
             }
-            // Cancel like
+            // If user likes (but already previously liked)
             else if (like === 0 && alreadyLiked) {
+                // Cancel like
                 sauce.likes--;
                 const index = sauce.usersLiked.indexOf(userId);
                 if (index !== -1) {
                     sauce.usersLiked.splice(index, 1);
                 }
             }
-            // Cancel dislike
+            // If user dislikes (but already previously disliked)
             else if (like === 0 && alreadyDisliked) {
+                // Cancel dislike
                 sauce.dislikes--;
                 const index = sauce.usersDisliked.indexOf(userId);
                 if (index !== -1) {
@@ -185,6 +192,7 @@ exports.likeOrDislikeSauce = (req, res) => {
                 });
         })
         .catch((error) => {
+            // Handle sauce not found error
             res.status(404).json({ error: 'Failed to find the sauce with the given ID!' });
         });
 };
