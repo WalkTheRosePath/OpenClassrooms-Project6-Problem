@@ -3,7 +3,7 @@
  * This middleware verifies the JWT token in the authorization header of incoming requests
  */
 
-// Import the required modules
+// Import the required module
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
@@ -18,12 +18,10 @@ module.exports = (req, res, next) => {
 
     // Check if the user ID in the request body matches the decoded user ID
     if (req.body.userId && req.body.userId !== userId) {
-        // Throw an error if the user ID is invalid
         res.status(401).json({
             error: 'Invalid user ID'
         });
     } else {
-        // Proceed to the next middleware if user authentication is successful
         next();
     }
 };
