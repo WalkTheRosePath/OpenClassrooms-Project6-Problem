@@ -10,8 +10,8 @@ const mongoose = require('mongoose');
 const path = require('path');
 
 // Import sauce and user routes
-const sauceRoutes = require('./routes/sauce'); // Import sauce routes
-const userRoutes = require('./routes/user'); // Import user routes
+const sauceRoutes = require('./routes/sauce'); 
+const userRoutes = require('./routes/user'); 
 
 const app = express();
 
@@ -41,6 +41,6 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // Mount sauce and user routes
 app.use('/api/sauces', sauceRoutes);
-app.use('/api/auth', userRoutes);
+app.use('/api/auth', userRoutes); // TODO Check here for bug 
 
 module.exports = app;

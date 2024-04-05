@@ -1,6 +1,7 @@
 /**
  * Entry point for the application
- * Initializes the HTTP server, sets up error handling, and starts listening on the specified port
+ * Initializes the HTTP server, sets up error handling, 
+ * and starts listening on the specified port
  */
 
 // Import the required modules
@@ -12,21 +13,7 @@ const http = require('http');
 // Import the Express application from app.js
 const app = require('./app');
 
-// Function to normalize a port value
-const normalizePort = val => {
-    const port = parseInt(val, 10);
-
-    if (isNaN(port)) {
-        return val;
-    }
-    if (port >= 0) {
-        return port;
-    }
-    return false;
-};
-
-// Set the port to the value of the PORT environment variable or 3000 if not defined
-const port = normalizePort(process.env.PORT || '3000');
+const port = 3000;
 app.set('port', port);
 
 // Create an HTTP server using the Express app

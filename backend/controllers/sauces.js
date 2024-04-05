@@ -1,10 +1,12 @@
 // Import the required modules
-const Sauce = require('../models/sauce');
 const fs = require('fs');
 
+const SauceModel = require('../models/sauce');
+const utils = require('../utils')
+
 // Controller function to get all Sauces and return them as JSON response
-exports.getAllSauces = (req, res, next) => {
-    Sauce.find()
+exports.getAllSauces = (req, res) => {
+    SauceModel.find()
         .then((sauces) => {
             res.status(200).json(sauces);
         })
@@ -14,8 +16,8 @@ exports.getAllSauces = (req, res, next) => {
 };
 
 // Controller function to get a single Sauce by its ID and return it as JSON response
-exports.getOneSauce = (req, res, next) => {
-    Sauce.findOne({ _id: req.params.id })
+exports.getOneSauce = (req, res) => {
+    SauceModel.findOne({ _id: req.params.id })
         .then((sauce) => {
             if (!sauce) {
                 res.status(404).json({ error: 'Sauce not found!' });
@@ -29,17 +31,11 @@ exports.getOneSauce = (req, res, next) => {
 };
 
 // Controller function to create a new Sauce based on the data received in the request body
-exports.createSauce = (req, res, next) => {
-    // Construct the image URL using the request protocol and host
-    const imageUrl = req.protocol + '://' + req.get('host') + '/images/' + req.file.filename;
-
-    // Parse the sauce data from the request body
-    const sauceData = JSON.parse(req.body.sauce);
-
+exports.createSauce = (req, res) => {
     // Create a new Sauce instance with data from the request
-    const sauce = new Sauce({
-        ...sauceData,
-        imageUrl: imageUrl,
+    const sauceDocument = new SauceModel({
+        ...JSON.parse(req.body.sauce),
+        imageUrl: utils.createImageUrl(req),
         likes: 0,
         dislikes: 0,
         usersLiked: [],
@@ -47,9 +43,9 @@ exports.createSauce = (req, res, next) => {
     });
 
     // Save the Sauce to the database
-    sauce.save()
-        .then(() => {
-            res.status(201).json({ message: 'Sauce saved successfully!' });
+    sauceDocument.save()
+        .then((doc) => {
+            res.status(201).json({ _id: doc.id, message: 'Sauce saved successfully!' });
         }
         ).catch((error) => {
             res.status(400).json({ error: error.message });
@@ -57,26 +53,28 @@ exports.createSauce = (req, res, next) => {
 };
 
 // Controller function to modify a Sauce based on the ID provided in the request parameters
-exports.modifySauce = (req, res, next) => {
+exports.modifySauce = (req, res) => {
     // Check if an image is uploaded
     let sauceData = req.body;
 
-    // If an image is uploaded, update imageUrl
-    if (req.file) {
-        if (req.body.sauce) {
-            try {
-                sauceData = JSON.parse(req.body.sauce);
-            } catch (error) {
-                // Handle parsing error
-                res.status(400).json({ error: 'Invalid sauce data format!' });
-                return;
+    if (req.is("multipart/form-data")) {
+        // If an image is uploaded, update imageUrl
+        if (req.file) {
+            if (req.body.sauce) {
+                try {
+                    sauceData = JSON.parse(req.body.sauce);
+                } catch (error) {
+                    // Handle parsing error
+                    res.status(400).json({ error: 'Invalid sauce data format!' });
+                    return;
+                }
             }
+            sauceData.imageUrl = utils.createImageUrl(req)
         }
-        sauceData.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
     }
 
     // Update the Sauce in the database
-    Sauce.updateOne({ _id: req.params.id }, sauceData)
+    SauceModel.updateOne({ _id: req.params.id }, sauceData)
         .then(() => {
             res.status(200).json({ message: "Sauce updated successfully!" });
         })
@@ -86,19 +84,21 @@ exports.modifySauce = (req, res, next) => {
 };
 
 // Controller function to delete a Sauce by its ID from the database and deletes its image file from the file system
-exports.deleteSauce = (req, res, next) => {
+exports.deleteSauce = (req, res) => {
     // Find the Sauce by its ID
-    Sauce.findOne({ _id: req.params.id })
+    SauceModel.findOne({ _id: req.params.id })
         .then((sauce) => {
             if (!sauce) {
                 res.status(404).json({ error: 'Sauce not found!' });
             } else {
                 // Extract the filename from the imageUrl
                 const filename = sauce.imageUrl.split('/images/')[1];
+                console.log(filename)
                 // Delete the file from the file system
                 fs.unlink('images/' + filename, () => {
+                    // res.status(200).json({ message: 'Sauce not deleted!' });
                     // Delete the Sauce from the database
-                    Sauce.deleteOne({ _id: req.params.id })
+                    SauceModel.deleteOne({ _id: req.params.id })
                         .then(() => {
                             res.status(200).json({ message: 'Sauce deleted successfully!' });
                         })
@@ -114,11 +114,11 @@ exports.deleteSauce = (req, res, next) => {
 };
 
 // Controller function to like or dislike a Sauce by updating likes and dislikes count and maintains arrays of user IDs who liked or disliked
-exports.likeOrDislikeSauce = (req, res, next) => {
+exports.likeOrDislikeSauce = (req, res) => {
     const { userId, like } = req.body;
     const sauceId = req.params.id;
 
-    Sauce.findOne({ _id: sauceId })
+    SauceModel.findOne({ _id: sauceId })
         .then((sauce) => {
             if (!sauce) {
                 res.status(404).json({ error: 'Sauce not found!' });
@@ -175,7 +175,7 @@ exports.likeOrDislikeSauce = (req, res, next) => {
             }
 
             // Update the sauce in the database
-            Sauce.updateOne({ _id: sauceId }, sauce)
+            SauceModel.updateOne({ _id: sauceId }, sauce)
                 .then(() => {
                     res.status(200).json({ message: 'Like or dislike updated successfully!' });
                 })

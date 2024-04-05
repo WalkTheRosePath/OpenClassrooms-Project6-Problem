@@ -7,7 +7,7 @@
 // Import the required modules
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const UserModel = require('../models/user');
 
 // Controller function for user signup
 exports.signup = (req, res, next) => {
@@ -15,7 +15,7 @@ exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
         .then((hash) => {
             // Create a new user instance with hashed password
-            const user = new User({
+            const user = new UserModel({
                 email: req.body.email,
                 password: hash
             });
@@ -42,7 +42,7 @@ exports.signup = (req, res, next) => {
 // Controller function for user login
 exports.login = (req, res, next) => {
     // Find user by email in the database
-    User.findOne({ email: req.body.email })
+    UserModel.findOne({ email: req.body.email })
         .then((user) => {
             if (!user) {
                 // If user is not found, return an error message
