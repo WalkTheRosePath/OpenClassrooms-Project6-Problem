@@ -6,13 +6,10 @@
 
 // Import the required modules
 require('dotenv').config();
-
-// Import the HTTP module for creating an HTTP server
 const http = require('http');
-
-// Import the Express application from app.js
 const app = require('./app');
 
+// Set the port
 const port = 3000;
 app.set('port', port);
 
